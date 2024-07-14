@@ -3,22 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quote Generator</title>
+    <title>Language Quote Generator</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <h1>Quote Generator</h1>
-        <form id="quoteForm">
+        <h1>Language Quote Generator</h1>
+        
+        <div id="languageSelector">
             <label for="language">Select a language:</label>
             <select id="language" name="language"></select>
-            <button type="submit">Get Quotes</button>
-        </form>
-        <div id="quoteDisplay"></div>
+        </div>
+
+        <div id="quoteContainer">
+            <div id="quoteImage">
+                <p id="quoteText"></p>
+                <p id="quoteTranslation"></p>
+            </div>
+        </div>
+
+        <div id="navigation">
+            <button id="prevQuote">Previous</button>
+            <button id="nextQuote">Next</button>
+        </div>
     </div>
+
     <script src="languages.js"></script>
     <script src="quotes.js"></script>
     <script src="script.js"></script>
 </body>
-
 </html>

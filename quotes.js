@@ -69,13 +69,6 @@ const quoteData = {
             { text: "ಮನಸ್ಸಿದ್ದರೆ ಮಾರ್ಗ", translation: "Where there's a will, there's a way." },
             { text: "ಸತ್ಯಮೇವ ಜಯತೇ", translation: "Truth alone triumphs." },
             { text: "ಅತಿಥಿ ದೇವೋ ಭವ", translation: "The guest is God." }
-        ],
-        "Manipuri": [
-            { text: "अहिंग नुमित खुदिंगी ऐना नुंशिजरि।", translation: "I love you day and night." },
-            { text: "लैबाक मचा ओइबा फजबनि।", translation: "It's good to be a patriot." },
-            { text: "थबक शुबा मीना पुन्सी नुंशाई।", translation: "Life is happy for those who work." },
-            { text: "ऐगी इमा लैबाकपु नुंशिजौ।", translation: "Let's love our motherland." },
-            { text: "हैबा शक्ति पुम्नमक शिजिन्नौ।", translation: "Let's use all our strength." }
         ]
     }
 };

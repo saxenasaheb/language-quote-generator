@@ -1,3 +1,7 @@
+// Global variables to keep track of current quotes and index
+let currentQuotes = [];
+let currentIndex = 0;
+
 // Function to populate the language dropdown
 function populateLanguageDropdown() {
     const languageSelect = document.getElementById('language');
@@ -9,59 +13,86 @@ function populateLanguageDropdown() {
     });
 }
 
-// Function to get language code
-function getLangCode(language) {
-    return languageData.getLanguageCode(language);
+// Function to display a single quote
+function displayQuote(quote) {
+    const quoteText = document.getElementById('quoteText');
+    const quoteTranslation = document.getElementById('quoteTranslation');
+    const quoteImage = document.getElementById('quoteImage');
+
+    quoteText.textContent = `"${quote.text}"`;
+    quoteTranslation.textContent = quote.translation ? `Translation: "${quote.translation}"` : '';
+    
+    // Set a random background image
+    const imageUrl = getRandomImageUrl();
+    quoteImage.style.backgroundImage = `url(${imageUrl})`;
 }
 
-// Function to display quotes
-function displayQuotes(language) {
-    const quoteDisplay = document.getElementById('quoteDisplay');
-    if (quoteData.quotes[language]) {
-        const selectedQuotes = getRandomQuotes(quoteData.quotes[language], 5);
-        quoteDisplay.innerHTML = selectedQuotes.map(quote => `
-            <div class="quote">
-                <p class="original" lang="${getLangCode(language)}">"${quote.text}"</p>
-                ${quote.translation ? `<p class="translation">Translation: "${quote.translation}"</p>` : ''}
-            </div>
-        `).join('');
+// Function to get a random image URL
+function getRandomImageUrl() {
+    // Replace with your own collection of image URLs
+    const images = [
+        'https://source.unsplash.com/random/800x600?nature',
+        'https://source.unsplash.com/random/800x600?landscape',
+        'https://source.unsplash.com/random/800x600?abstract'
+    ];
+    return images[Math.floor(Math.random() * images.length)];
+}
+
+// Function to load quotes for a selected language
+function loadQuotes(language) {
+    currentQuotes = quoteData.quotes[language] || [];
+    currentIndex = 0;
+    if (currentQuotes.length > 0) {
+        displayQuote(currentQuotes[currentIndex]);
     } else {
-        quoteDisplay.innerHTML = '<p>No quotes available for this language.</p>';
+        document.getElementById('quoteText').textContent = 'No quotes available for this language.';
+        document.getElementById('quoteTranslation').textContent = '';
+    }
+    updateNavigationButtons();
+}
+
+// Function to display the next quote
+function nextQuote() {
+    if (currentQuotes.length > 0) {
+        currentIndex = (currentIndex + 1) % currentQuotes.length;
+        displayQuote(currentQuotes[currentIndex]);
+        updateNavigationButtons();
     }
 }
 
-// Function to get random quotes
-function getRandomQuotes(arr, n) {
-    let result = new Array(n),
-        len = arr.length,
-        taken = new Array(len);
-    if (n > len)
-        throw new RangeError("getRandomQuotes: more elements taken than available");
-    while (n--) {
-        let x = Math.floor(Math.random() * len);
-        result[n] = arr[x in taken ? taken[x] : x];
-        taken[x] = --len in taken ? taken[len] : len;
+// Function to display the previous quote
+function prevQuote() {
+    if (currentQuotes.length > 0) {
+        currentIndex = (currentIndex - 1 + currentQuotes.length) % currentQuotes.length;
+        displayQuote(currentQuotes[currentIndex]);
+        updateNavigationButtons();
     }
-    return result;
+}
+
+// Function to update the state of navigation buttons
+function updateNavigationButtons() {
+    const prevButton = document.getElementById('prevQuote');
+    const nextButton = document.getElementById('nextQuote');
+    
+    prevButton.disabled = currentQuotes.length <= 1;
+    nextButton.disabled = currentQuotes.length <= 1;
 }
 
 // Event listener for when the DOM content is loaded
 document.addEventListener('DOMContentLoaded', function() {
-    // Populate the language dropdown
     populateLanguageDropdown();
 
-    // Get form and quote display elements
-    const form = document.getElementById('quoteForm');
-    const quoteDisplay = document.getElementById('quoteDisplay');
+    const languageSelect = document.getElementById('language');
+    const nextButton = document.getElementById('nextQuote');
+    const prevButton = document.getElementById('prevQuote');
 
-    // Event listener for form submission
-    form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const language = document.getElementById('language').value;
-        displayQuotes(language);
+    languageSelect.addEventListener('change', function() {
+        loadQuotes(this.value);
     });
 
-    // Optional: Display quotes in the default language when the page loads
-    const defaultLanguage = document.getElementById('language').value;
-    displayQuotes(defaultLanguage);
+    nextButton.addEventListener('click', nextQuote);
+    prevButton.addEventListener('click', prevQuote);
+
+    // Load quotes for the default selected language
+    loadQuotes(languageSelect.value);
 });
