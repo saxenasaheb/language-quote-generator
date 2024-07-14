@@ -103,3 +103,40 @@ button:hover {
     font-style: italic;
     color: #666;
 }
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&family=Noto+Sans+JP&family=Noto+Sans+KR&family=Noto+Sans+Arabic&display=swap');
+
+body {
+    font-family: 'Noto Sans', sans-serif;
+}
+
+[lang="ja"] {
+    font-family: 'Noto Sans JP', sans-serif;
+}
+
+[lang="ru"] {
+    font-family: 'Noto Sans', sans-serif;
+}
+
+[lang="ar"] {
+    font-family: 'Noto Sans Arabic', sans-serif;
+    direction: rtl;
+}
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&family=Noto+Sans+JP&family=Noto+Sans+KR&family=Noto+Sans+Arabic&display=swap');
+
+body {
+    font-family: 'Noto Sans', sans-serif;
+}
+
+[lang="ja"] {
+    font-family: 'Noto Sans JP', sans-serif;
+}
+
+[lang="ru"] {
+    font-family: 'Noto Sans', sans-serif;
+}
+
+[lang="ar"] {
+    font-family: 'Noto Sans Arabic', sans-serif;
+    direction: rtl;
+}
