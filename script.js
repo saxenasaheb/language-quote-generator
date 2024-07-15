@@ -1,3 +1,11 @@
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
 // Global variables to keep track of current quotes and index
 let currentQuotes = [];
 let currentIndex = 0;
@@ -54,6 +62,10 @@ function getRandomImageUrl() {
 function loadQuotes(language) {
     console.log("Loading quotes for language:", language);
     currentQuotes = quoteData.quotes[language] || [];
+    
+    // Shuffle the quotes
+    currentQuotes = shuffleArray([...currentQuotes]);
+    
     currentIndex = 0;
     if (currentQuotes.length > 0) {
         displayQuote(currentQuotes[currentIndex], language);
