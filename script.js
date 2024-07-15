@@ -21,13 +21,13 @@ function displayQuote(quote, language) {
     const quoteImage = document.getElementById('quoteImage');
 
     quoteText.textContent = `"${quote.text}"`;
-    quoteTranslation.textContent = quote.translation ? `Translation: "${quote.translation}"` : '';    quoteText.textContent = `"${quote.text}"`;
     quoteTranslation.textContent = quote.translation ? `Translation: "${quote.translation}"` : '';
     
     const imageUrl = getRandomImageUrl();
     console.log("Attempting to load image:", imageUrl);
+    
     // Setup share buttons
-  setupShareButtons(quote, quote.translation, language);
+    setupShareButtons(quote, language);
 
     // Create a new image object to test loading
     const img = new Image();
@@ -43,7 +43,6 @@ function displayQuote(quote, language) {
 
 // Function to get a random image URL
 function getRandomImageUrl() {
-    // Using Lorem Picsum for placeholder images
     const width = 800;
     const height = 400;
     const randomId = Math.floor(Math.random() * 1000); // Random image
@@ -97,51 +96,46 @@ function updateNavigationButtons() {
 document.addEventListener('DOMContentLoaded', function() {
     populateLanguageDropdown();
 
-    const initialLanguage = document.getElementById('language').options[0].text;
-    console.log("Initial language:", initialLanguage);
-    loadQuotes(initialLanguage);
     const languageSelect = document.getElementById('language');
-    languageSelect.addEventListener('change', function() {
-    const selectedLanguage = this.options[this.selectedIndex].text;
-    console.log("Selected language:", selectedLanguage);
-    loadQuotes(selectedLanguage);
-});
     const nextButton = document.getElementById('nextQuote');
     const prevButton = document.getElementById('prevQuote');
 
     languageSelect.addEventListener('change', function() {
-        const selectedLanguage = this.options[this.selectedIndex].text;
+        const selectedLanguage = this.value;
         console.log("Selected language:", selectedLanguage);
         loadQuotes(selectedLanguage);
-      });
+    });
 
     nextButton.addEventListener('click', nextQuote);
     prevButton.addEventListener('click', prevQuote);
 
     // Load quotes for the default selected language
-    loadQuotes(languageSelect.value);
+    const initialLanguage = languageSelect.value;
+    console.log("Initial language:", initialLanguage);
+    loadQuotes(initialLanguage);
 });
+
 function shareOnTwitter(quote, translation, language) {
     console.log("Sharing on Twitter for language:", language);
     const text = `"${quote}" - ${language} proverb\n${translation ? `Translation: "${translation}"` : ''}\n`;
     const url = 'https://language-quote-generator.vercel.app/';
     const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
     window.open(twitterUrl, '_blank');
-  }
-  
-  function shareOnWhatsApp(quote, translation, language) {
-    console.log("Sharing on Twitter for language:", language);
+}
+
+function shareOnWhatsApp(quote, translation, language) {
+    console.log("Sharing on WhatsApp for language:", language);
     const text = `"${quote}" - ${language} proverb\n${translation ? `Translation: "${translation}"` : ''}\n`;
     const url = 'https://language-quote-generator.vercel.app/';
     const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text + url)}`;
     window.open(whatsappUrl, '_blank');
-  }
-  
-  function setupShareButtons(quote, language) {
+}
+
+function setupShareButtons(quote, language) {
     console.log("Setting up share buttons for language:", language);
     const twitterBtn = document.getElementById('twitterShare');
     const whatsappBtn = document.getElementById('whatsappShare');
-  
+
     twitterBtn.onclick = () => shareOnTwitter(quote.text, quote.translation, language);
     whatsappBtn.onclick = () => shareOnWhatsApp(quote.text, quote.translation, language);
-  }
+}
