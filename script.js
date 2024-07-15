@@ -21,6 +21,7 @@ function displayQuote(quote, language) {
     const quoteImage = document.getElementById('quoteImage');
 
     quoteText.textContent = `"${quote.text}"`;
+    quoteTranslation.textContent = quote.translation ? `Translation: "${quote.translation}"` : '';    quoteText.textContent = `"${quote.text}"`;
     quoteTranslation.textContent = quote.translation ? `Translation: "${quote.translation}"` : '';
     
     const imageUrl = getRandomImageUrl();
@@ -67,7 +68,8 @@ function loadQuotes(language) {
 function nextQuote() {
     if (currentQuotes.length > 0) {
         currentIndex = (currentIndex + 1) % currentQuotes.length;
-        displayQuote(currentQuotes[currentIndex]);
+        const currentLanguage = document.getElementById('language').value;
+        displayQuote(currentQuotes[currentIndex], currentLanguage);
         updateNavigationButtons();
     }
 }
@@ -76,7 +78,8 @@ function nextQuote() {
 function prevQuote() {
     if (currentQuotes.length > 0) {
         currentIndex = (currentIndex - 1 + currentQuotes.length) % currentQuotes.length;
-        displayQuote(currentQuotes[currentIndex]);
+        const currentLanguage = document.getElementById('language').value;
+        displayQuote(currentQuotes[currentIndex], currentLanguage);
         updateNavigationButtons();
     }
 }
@@ -94,7 +97,15 @@ function updateNavigationButtons() {
 document.addEventListener('DOMContentLoaded', function() {
     populateLanguageDropdown();
 
+    const initialLanguage = document.getElementById('language').options[0].text;
+    console.log("Initial language:", initialLanguage);
+    loadQuotes(initialLanguage);
     const languageSelect = document.getElementById('language');
+    languageSelect.addEventListener('change', function() {
+    const selectedLanguage = this.options[this.selectedIndex].text;
+    console.log("Selected language:", selectedLanguage);
+    loadQuotes(selectedLanguage);
+});
     const nextButton = document.getElementById('nextQuote');
     const prevButton = document.getElementById('prevQuote');
 
