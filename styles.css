@@ -221,3 +221,12 @@ button:disabled {
   .shareBtn:hover {
     opacity: 0.9;
   }
+  #telegramShare {
+    background-color: #0088cc;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu&display=swap');
+
+[lang="te"] {
+    font-family: 'Noto Sans Telugu', sans-serif;
+}

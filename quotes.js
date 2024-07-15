@@ -22,6 +22,28 @@ const quoteData = {
             { text: "The purpose of our lives is to be happy.", translation: null },
             { text: "Get busy living or get busy dying.", translation: null }
         ],
+        "Telugu": [
+        { text: "చదువు సంపద కొరకు, విద్య విజ్ఞానం కొరకు", translation: "Study for wealth, education for knowledge." },
+        { text: "తల్లిదండ్రులు లేని ఇల్లు తలుపులు లేని గుడి", translation: "A house without parents is like a temple without doors." },
+        { text: "ఆలస్యం అమృతం విషం", translation: "Delay is nectar turned poison." },
+        { text: "అన్నం పరబ్రహ్మ స్వరూపం", translation: "Food is the embodiment of the divine." },
+        { text: "తొందరపాటు పని తప్పుల పాలు", translation: "Hasty work leads to mistakes." },
+        { text: "నీతి నిజాయితీ ఉన్నవాడే నిజమైన మనిషి", translation: "One with ethics and honesty is a true human." },
+        { text: "ఒకరి కష్టంలో మరొకరి సుఖం", translation: "One's hardship is another's happiness." },
+        { text: "పెద్దల మాట పాడిపంట", translation: "The words of elders bring prosperity." },
+        { text: "చెట్టు నీడన చల్లగా కూర్చోవచ్చు, కానీ చెట్టే నీడ కావాలంటే కష్టపడాలి", translation: "You can sit coolly under a tree's shade, but to be the shade, you must endure hardship." },
+        { text: "మంచి చేస్తే మంచి జరుగుతుంది", translation: "Do good and good will happen." },
+        { text: "నిప్పు లేనిదే పొగ రాదు", translation: "There's no smoke without fire." },
+        { text: "నిజాయితీ గల వ్యక్తి నిత్యం ఆనందంగా ఉంటాడు", translation: "An honest person is always happy." },
+        { text: "కష్టపడితే కలలు నిజమవుతాయి", translation: "Hard work makes dreams come true." },
+        { text: "తెలివితేటలు ఉన్నవాడు తప్పులు చేయడు", translation: "A wise person doesn't make mistakes." },
+        { text: "మౌనమే మంచి మందు", translation: "Silence is the best medicine." },
+        { text: "ఆరోగ్యమే మహాభాగ్యం", translation: "Health is the greatest wealth." },
+        { text: "ఏ పనైనా శ్రద్ధగా చేయాలి", translation: "Whatever work you do, do it with dedication." },
+        { text: "సహనమే జీవితానికి సంజీవిని", translation: "Patience is the elixir of life." },
+        { text: "మాటలు వినాలి, మంచివి మాత్రమే నమ్మాలి", translation: "Listen to words, but believe only the good ones." },
+        { text: "అందరూ ఒకటే అనుకుంటే అదే నిజం", translation: "If everyone thinks the same, it becomes the truth." }
+    ],
         "Spanish": [
             { text: "En boca cerrada no entran moscas.", translation: "Flies don't enter a closed mouth." },
             { text: "El que la sigue la consigue.", translation: "He who follows it, achieves it." },

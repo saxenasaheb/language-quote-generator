@@ -22,7 +22,8 @@ function displayQuote(quote, language) {
 
     quoteText.textContent = `"${quote.text}"`;
     quoteTranslation.textContent = quote.translation ? `Translation: "${quote.translation}"` : '';
-    
+    quoteText.setAttribute('lang', getLangCode(language));
+
     const imageUrl = getRandomImageUrl();
     console.log("Attempting to load image:", imageUrl);
     
@@ -135,7 +136,27 @@ function setupShareButtons(quote, language) {
     console.log("Setting up share buttons for language:", language);
     const twitterBtn = document.getElementById('twitterShare');
     const whatsappBtn = document.getElementById('whatsappShare');
+    const telegramBtn = document.getElementById('telegramShare');
 
     twitterBtn.onclick = () => shareOnTwitter(quote.text, quote.translation, language);
     whatsappBtn.onclick = () => shareOnWhatsApp(quote.text, quote.translation, language);
+    telegramBtn.onclick = () => shareOnTelegram(quote.text, quote.translation, language);
+
+}
+
+function shareOnTelegram(quote, translation, language) {
+    console.log("Sharing on Telegram for language:", language);
+    const text = `"${quote}" - ${language} proverb\n${translation ? `Translation: "${translation}"` : ''}\n`;
+    const url = 'https://language-quote-generator.vercel.app/';
+    const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`;
+    window.open(telegramUrl, '_blank');
+}
+
+function getLangCode(language) {
+    const langCodes = {
+        'English': 'en',
+        
+        'Telugu': 'te'
+    };
+    return langCodes[language] || 'en';
 }

@@ -11,7 +11,7 @@ const languageData = {
         { code: "hi", name: "Hindi" },
         { code: "kn", name: "Kannada" },
         { code: "zh", name: "Mandarin" },
-        { code: "bpy", name: "Bishnupriya Manipuri" }
+        { code: "te", name: "Telugu" }
         
 
 
