@@ -24,6 +24,8 @@ function displayQuote(quote) {
     
     const imageUrl = getRandomImageUrl();
     console.log("Attempting to load image:", imageUrl);
+    // Setup share buttons
+  setupShareButtons(quote, quote.translation, language);
 
     // Create a new image object to test loading
     const img = new Image();
@@ -104,3 +106,24 @@ document.addEventListener('DOMContentLoaded', function() {
     // Load quotes for the default selected language
     loadQuotes(languageSelect.value);
 });
+function shareOnTwitter(quote, translation, language) {
+    const text = `"${quote}" - ${language} proverb\n${translation ? `Translation: "${translation}"` : ''}\n`;
+    const url = 'https://language-quote-generator.vercel.app/'; // Replace with your actual URL
+    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+    window.open(twitterUrl, '_blank');
+  }
+  
+  function shareOnWhatsApp(quote, translation, language) {
+    const text = `"${quote}" - ${language} proverb\n${translation ? `Translation: "${translation}"` : ''}\n`;
+    const url = 'https://language-quote-generator.vercel.app/'; // Replace with your actual URL
+    const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text + url)}`;
+    window.open(whatsappUrl, '_blank');
+  }
+  
+  function setupShareButtons(quote, translation, language) {
+    const twitterBtn = document.getElementById('twitterShare');
+    const whatsappBtn = document.getElementById('whatsappShare');
+  
+    twitterBtn.onclick = () => shareOnTwitter(quote.text, quote.translation, language);
+    whatsappBtn.onclick = () => shareOnWhatsApp(quote.text, quote.translation, language);
+  }

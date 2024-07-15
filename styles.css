@@ -194,3 +194,30 @@ button:disabled {
         font-size: 14px;
     }
 }
+#shareButtons {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+  
+  .shareBtn {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  #twitterShare {
+    background-color: #1DA1F2;
+  }
+  
+  #whatsappShare {
+    background-color: #25D366;
+  }
+  
+  .shareBtn:hover {
+    opacity: 0.9;
+  }
