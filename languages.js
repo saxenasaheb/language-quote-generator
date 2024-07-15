@@ -10,7 +10,11 @@ const languageData = {
         { code: "ar", name: "Arabic" },
         { code: "hi", name: "Hindi" },
         { code: "kn", name: "Kannada" },
+        { code: "zh", name: "Mandarin" },
         { code: "bpy", name: "Bishnupriya Manipuri" }
+        
+
+
     ],
     getLanguageCode: function(languageName) {
         const language = this.availableLanguages.find(lang => lang.name === languageName);

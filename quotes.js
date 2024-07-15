@@ -69,6 +69,13 @@ const quoteData = {
             { text: "ಮನಸ್ಸಿದ್ದರೆ ಮಾರ್ಗ", translation: "Where there's a will, there's a way." },
             { text: "ಸತ್ಯಮೇವ ಜಯತೇ", translation: "Truth alone triumphs." },
             { text: "ಅತಿಥಿ ದೇವೋ ಭವ", translation: "The guest is God." }
+        ],
+        "Mandarin": [
+            { text: "千里之行，始于足下。", translation: "A journey of a thousand miles begins with a single step." },
+            { text: "活到老，学到老。", translation: "Live till old, learn till old." },
+            { text: "一分耕耘，一分收获。", translation: "You reap what you sow." },
+            { text: "三个臭皮匠，顶个诸葛亮。", translation: "Three cobblers with their wits combined equal Zhuge Liang (the master mind)." },
+            { text: "不在乎天长地久，只在乎曾经拥有。", translation: "What matters is not how long it lasts, but that it happened." }
         ]
     }
 };

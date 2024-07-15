@@ -22,20 +22,28 @@ function displayQuote(quote) {
     quoteText.textContent = `"${quote.text}"`;
     quoteTranslation.textContent = quote.translation ? `Translation: "${quote.translation}"` : '';
     
-    // Set a random background image
     const imageUrl = getRandomImageUrl();
-    quoteImage.style.backgroundImage = `url(${imageUrl})`;
+    console.log("Attempting to load image:", imageUrl);
+
+    // Create a new image object to test loading
+    const img = new Image();
+    img.onload = function() {
+        quoteImage.style.backgroundImage = `url(${imageUrl})`;
+    };
+    img.onerror = function() {
+        console.error("Failed to load image:", imageUrl);
+        quoteImage.style.backgroundColor = '#f0f0f0'; // Fallback background color
+    };
+    img.src = imageUrl;
 }
 
 // Function to get a random image URL
 function getRandomImageUrl() {
-    // Replace with your own collection of image URLs
-    const images = [
-        'https://source.unsplash.com/random/800x600?nature',
-        'https://source.unsplash.com/random/800x600?landscape',
-        'https://source.unsplash.com/random/800x600?abstract'
-    ];
-    return images[Math.floor(Math.random() * images.length)];
+    // Using Lorem Picsum for placeholder images
+    const width = 800;
+    const height = 400;
+    const randomId = Math.floor(Math.random() * 1000); // Random image
+    return `https://picsum.photos/seed/${randomId}/${width}/${height}`;
 }
 
 // Function to load quotes for a selected language
