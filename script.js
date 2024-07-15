@@ -14,7 +14,8 @@ function populateLanguageDropdown() {
 }
 
 // Function to display a single quote
-function displayQuote(quote) {
+function displayQuote(quote, language) {
+    console.log("Displaying quote for language:", language);
     const quoteText = document.getElementById('quoteText');
     const quoteTranslation = document.getElementById('quoteTranslation');
     const quoteImage = document.getElementById('quoteImage');
@@ -50,10 +51,11 @@ function getRandomImageUrl() {
 
 // Function to load quotes for a selected language
 function loadQuotes(language) {
+    console.log("Loading quotes for language:", language);
     currentQuotes = quoteData.quotes[language] || [];
     currentIndex = 0;
     if (currentQuotes.length > 0) {
-        displayQuote(currentQuotes[currentIndex]);
+        displayQuote(currentQuotes[currentIndex], language);
     } else {
         document.getElementById('quoteText').textContent = 'No quotes available for this language.';
         document.getElementById('quoteTranslation').textContent = '';
@@ -97,8 +99,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const prevButton = document.getElementById('prevQuote');
 
     languageSelect.addEventListener('change', function() {
-        loadQuotes(this.value);
-    });
+        const selectedLanguage = this.options[this.selectedIndex].text;
+        console.log("Selected language:", selectedLanguage);
+        loadQuotes(selectedLanguage);
+      });
 
     nextButton.addEventListener('click', nextQuote);
     prevButton.addEventListener('click', prevQuote);
@@ -107,20 +111,23 @@ document.addEventListener('DOMContentLoaded', function() {
     loadQuotes(languageSelect.value);
 });
 function shareOnTwitter(quote, translation, language) {
+    console.log("Sharing on Twitter for language:", language);
     const text = `"${quote}" - ${language} proverb\n${translation ? `Translation: "${translation}"` : ''}\n`;
-    const url = 'https://language-quote-generator.vercel.app/'; // Replace with your actual URL
+    const url = 'https://language-quote-generator.vercel.app/';
     const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
     window.open(twitterUrl, '_blank');
   }
   
   function shareOnWhatsApp(quote, translation, language) {
+    console.log("Sharing on Twitter for language:", language);
     const text = `"${quote}" - ${language} proverb\n${translation ? `Translation: "${translation}"` : ''}\n`;
-    const url = 'https://language-quote-generator.vercel.app/'; // Replace with your actual URL
+    const url = 'https://language-quote-generator.vercel.app/';
     const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text + url)}`;
     window.open(whatsappUrl, '_blank');
   }
   
-  function setupShareButtons(quote, translation, language) {
+  function setupShareButtons(quote, language) {
+    console.log("Setting up share buttons for language:", language);
     const twitterBtn = document.getElementById('twitterShare');
     const whatsappBtn = document.getElementById('whatsappShare');
   
