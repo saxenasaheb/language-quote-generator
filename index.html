@@ -3,51 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wisdom from across the globe</title>
+    <title>Multilingual Quote Generator</title>
     <link rel="stylesheet" href="styles.css">
-    
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
+    <meta property="og:title" content="Multilingual Quote Generator">
+    <meta property="og:description" content="Generate and share quotes in multiple languages">
+    <meta property="og:image" content="https://language-quote-generator.vercel.app/default-image.jpg">
     <meta property="og:url" content="https://language-quote-generator.vercel.app/">
-    <meta property="og:title" content="Wisdom from across the globe">
-    <meta property="og:description" content="Discover proverbs from different languages">
-    <meta property="og:image" content="https://picsum.photos/1200/630">
-
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://language-quote-generator.vercel.app/">
-    <meta property="twitter:title" content="Wisdom from across the globe">
-    <meta property="twitter:description" content="Discover proverbs from different languages">
-    <meta property="twitter:image" content="https://picsum.photos/1200/630">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Multilingual Quote Generator">
+    <meta name="twitter:description" content="Generate and share quotes in multiple languages">
+    <meta name="twitter:image" content="https://language-quote-generator.vercel.app/default-image.jpg">
 </head>
 <body>
     <div class="container">
-        <h1>Wisdom from across the globe</h1>
+        <h1>Wisdom from around the world</h1>
         
         <div id="languageSelector">
             <label for="language">Select a language:</label>
-            <select id="language" name="language"></select>
+            <select id="language"></select>
         </div>
 
         <div id="quoteContainer">
             <div id="quoteImage">
-                <p id="quoteText"></p>
-                <p id="quoteTranslation"></p>
+                <div id="quoteText"></div>
+                <div id="quoteTranslation"></div>
             </div>
         </div>
 
         <div id="navigation">
-            <button id="prevQuote">Previous</button>
-            <button id="nextQuote">Next</button>
+            <button id="prevQuote">Previous Quote</button>
+            <button id="nextQuote">Next Quote</button>
         </div>
-        
+
         <div id="shareButtons">
-            <button id="twitterShare" class="shareBtn">Share on Twitter</button>
-            <button id="whatsappShare" class="shareBtn">Share on WhatsApp</button>
-            <button id="telegramShare" class="shareBtn">Share on Telegram</button>
+            <button id="twitterShare" class="shareBtn">Twitter</button>
+            <button id="whatsappShare" class="shareBtn">WhatsApp</button>
+            <button id="telegramShare" class="shareBtn">Telegram</button>
         </div>
     </div>
 
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script src="firebase-config.js"></script>
     <script src="languages.js"></script>
     <script src="quotes.js"></script>
     <script src="script.js"></script>

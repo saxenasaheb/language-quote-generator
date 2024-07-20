@@ -1,3 +1,17 @@
+// Initialize Firebase
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
+const storage = firebase.storage();
+const VERCEL_URL = 'https://language-quote-generator.vercel.app/';
+
+// Global variables
+let currentQuotes = [];
+let currentIndex = 0;
+let currentQuoteImageUrl = '';
+let currentQuote = null;
+let currentLanguage = '';
+
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -6,12 +20,6 @@ function shuffleArray(array) {
     return array;
 }
 
-// Global variables to keep track of current quotes and index
-let currentQuotes = [];
-let currentIndex = 0;
-let currentQuoteImageUrl = '';
-
-// Function to populate the language dropdown
 function populateLanguageDropdown() {
     const languageSelect = document.getElementById('language');
     languageData.availableLanguages.forEach(lang => {
@@ -22,7 +30,7 @@ function populateLanguageDropdown() {
     });
 }
 
-function displayQuote(quote, language) {
+async function displayQuote(quote, language) {
     console.log("Displaying quote for language:", language);
     const quoteText = document.getElementById('quoteText');
     const quoteTranslation = document.getElementById('quoteTranslation');
@@ -32,32 +40,36 @@ function displayQuote(quote, language) {
     quoteTranslation.textContent = quote.translation ? `Translation: "${quote.translation}"` : '';
     quoteText.setAttribute('lang', getLangCode(language));
 
-    // Generate a random image URL
     const randomImageUrl = getRandomImageUrl();
-    console.log("Random image URL:", randomImageUrl);
-
-    // Set the background image
     quoteImage.style.backgroundImage = `url(${randomImageUrl})`;
 
-    // Fetch the image URL for this quote (for sharing)
-    fetch(`/api/og?quote=${encodeURIComponent(quote.text)}&language=${encodeURIComponent(language)}`)
-        .then(response => response.json())
-        .then(data => {
-            currentQuoteImageUrl = data.imageUrl;
-            updateOGImage(quote.text, language, currentQuoteImageUrl);
-        })
-        .catch(error => {
-            console.error('Error fetching quote image:', error);
-            // Use the random image URL as a fallback for sharing
-            currentQuoteImageUrl = randomImageUrl;
-            updateOGImage(quote.text, language, currentQuoteImageUrl);
+    await new Promise(resolve => requestAnimationFrame(resolve));
+
+    try {
+        const canvas = await html2canvas(quoteImage, {
+            backgroundColor: null,
+            logging: false,
+            useCORS: true
         });
+        const imageDataUrl = canvas.toDataURL('image/png');
+
+        const imageName = `quote_${Date.now()}.png`;
+        const imageRef = storage.ref().child(imageName);
+        const snapshot = await imageRef.putString(imageDataUrl, 'data_url');
+        currentQuoteImageUrl = await snapshot.ref.getDownloadURL();
+
+        currentQuote = quote;
+        currentLanguage = language;
+
+        updateOGImage(quote.text, language, currentQuoteImageUrl);
+    } catch (error) {
+        console.error('Error generating or uploading image:', error);
+        currentQuoteImageUrl = randomImageUrl; // Fallback to random image URL
+    }
     
-    // Setup share buttons
-    setupShareButtons(quote, language);
+    setupShareButtons();
 }
 
-// Function to get a random image URL
 function getRandomImageUrl() {
     const width = 800;
     const height = 400;
@@ -66,33 +78,43 @@ function getRandomImageUrl() {
 }
 
 function updateOGImage(quote, language, imageUrl) {
-    const fullImageUrl = `${window.location.origin}${imageUrl}`;
-    document.querySelector('meta[property="og:image"]').setAttribute('content', fullImageUrl);
-    document.querySelector('meta[property="twitter:image"]').setAttribute('content', fullImageUrl);
-    document.querySelector('meta[property="og:title"]').setAttribute('content', `${language} Proverb`);
-    document.querySelector('meta[property="og:description"]').setAttribute('content', quote);
+    const metaTags = {
+        'og:image': imageUrl,
+        'twitter:image': imageUrl,
+        'og:title': `${language} Proverb`,
+        'og:description': quote,
+        'og:url': VERCEL_URL
+    };
+
+    Object.entries(metaTags).forEach(([property, content]) => {
+        let metaTag = document.querySelector(`meta[property="${property}"]`) ||
+                      document.querySelector(`meta[name="${property}"]`);
+        if (!metaTag) {
+            metaTag = document.createElement('meta');
+            metaTag.setAttribute(property.includes('og:') ? 'property' : 'name', property);
+            document.head.appendChild(metaTag);
+        }
+        metaTag.setAttribute('content', content);
+    });
 }
 
-function setupShareButtons(quote, language) {
-    console.log("Setting up share buttons for language:", language);
-    const twitterBtn = document.getElementById('twitterShare');
-    const whatsappBtn = document.getElementById('whatsappShare');
-    const telegramBtn = document.getElementById('telegramShare');
+function setupShareButtons() {
+    const shareActions = {
+        'twitterShare': shareOnTwitter,
+        'whatsappShare': shareOnWhatsApp,
+        'telegramShare': shareOnTelegram
+    };
 
-    twitterBtn.onclick = () => shareOnTwitter(quote.text, quote.translation, language);
-    whatsappBtn.onclick = () => shareOnWhatsApp(quote.text, quote.translation, language);
-    telegramBtn.onclick = () => shareOnTelegram(quote.text, quote.translation, language);
+    Object.entries(shareActions).forEach(([id, action]) => {
+        document.getElementById(id).onclick = action;
+    });
 }
 
-// Function to load quotes for a selected language
 function loadQuotes(language) {
     console.log("Loading quotes for language:", language);
-    currentQuotes = quoteData.quotes[language] || [];
-    
-    // Shuffle the quotes
-    currentQuotes = shuffleArray([...currentQuotes]);
-    
+    currentQuotes = shuffleArray([...(quoteData.quotes[language] || [])]);
     currentIndex = 0;
+
     if (currentQuotes.length > 0) {
         displayQuote(currentQuotes[currentIndex], language);
     } else {
@@ -102,7 +124,6 @@ function loadQuotes(language) {
     updateNavigationButtons();
 }
 
-// Function to display the next quote
 function nextQuote() {
     if (currentQuotes.length > 0) {
         currentIndex = (currentIndex + 1) % currentQuotes.length;
@@ -112,7 +133,6 @@ function nextQuote() {
     }
 }
 
-// Function to display the previous quote
 function prevQuote() {
     if (currentQuotes.length > 0) {
         currentIndex = (currentIndex - 1 + currentQuotes.length) % currentQuotes.length;
@@ -122,78 +142,74 @@ function prevQuote() {
     }
 }
 
-// Function to update the state of navigation buttons
 function updateNavigationButtons() {
     const prevButton = document.getElementById('prevQuote');
     const nextButton = document.getElementById('nextQuote');
     
-    prevButton.disabled = currentQuotes.length <= 1;
-    nextButton.disabled = currentQuotes.length <= 1;
+    prevButton.disabled = nextButton.disabled = (currentQuotes.length <= 1);
 }
 
-// Event listener for when the DOM content is loaded
-document.addEventListener('DOMContentLoaded', function() {
-    populateLanguageDropdown();
+function getShareUrl() {
+    const baseUrl = window.location.hostname === 'localhost' ? window.location.origin : VERCEL_URL;
+    return `${baseUrl}?quote=${encodeURIComponent(currentQuote.text)}&lang=${encodeURIComponent(currentLanguage)}`;
+}
 
-    const languageSelect = document.getElementById('language');
-    const nextButton = document.getElementById('nextQuote');
-    const prevButton = document.getElementById('prevQuote');
-
-    languageSelect.addEventListener('change', function() {
-        const selectedLanguage = this.value;
-        console.log("Selected language:", selectedLanguage);
-        loadQuotes(selectedLanguage);
-    });
-
-    nextButton.addEventListener('click', nextQuote);
-    prevButton.addEventListener('click', prevQuote);
-
-    // Load quotes for the default selected language
-    const initialLanguage = languageSelect.value;
-    console.log("Initial language:", initialLanguage);
-    loadQuotes(initialLanguage);
-});
-
-function shareOnTwitter(quote, translation, language) {
-    console.log("Sharing on Twitter for language:", language);
-    const text = `"${quote}" - ${language} proverb\n${translation ? `Translation: "${translation}"` : ''}\n`;
-    const url = window.location.href;
-    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}&image=${encodeURIComponent(currentQuoteImageUrl)}`;
+function shareOnTwitter() {
+    if (!currentQuote) return;
+    const text = `"${currentQuote.text}" - ${currentLanguage} proverb`;
+    const url = getShareUrl();
+    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
     window.open(twitterUrl, '_blank');
 }
 
-function shareOnWhatsApp(quote, translation, language) {
-    console.log("Sharing on WhatsApp for language:", language);
-    const text = `"${quote}" - ${language} proverb\n${translation ? `Translation: "${translation}"` : ''}\n`;
-    const url = window.location.href;
-    const imageUrl = `${window.location.origin}${currentQuoteImageUrl}`;
-    const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text + url + '\n' + imageUrl)}`;
+function shareOnWhatsApp() {
+    if (!currentQuote) return;
+    const text = `"${currentQuote.text}" - ${currentLanguage} proverb`;
+    const url = getShareUrl();
+    const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text + '\n' + url)}`;
     window.open(whatsappUrl, '_blank');
 }
 
-function shareOnTelegram(quote, translation, language) {
-    console.log("Sharing on Telegram for language:", language);
-    const text = `"${quote}" - ${language} proverb\n${translation ? `Translation: "${translation}"` : ''}\n`;
-    const url = window.location.href;
-    const imageUrl = `${window.location.origin}${currentQuoteImageUrl}`;
-    const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text + '\n' + imageUrl)}`;
+function shareOnTelegram() {
+    if (!currentQuote) return;
+    const text = `"${currentQuote.text}" - ${currentLanguage} proverb`;
+    const url = getShareUrl();
+    const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`;
     window.open(telegramUrl, '_blank');
 }
 
 function getLangCode(language) {
     const langCodes = {
-        'English': 'en',
-        'Spanish': 'es',
-        'French': 'fr',
-        'German': 'de',
-        'Italian': 'it',
-        'Japanese': 'ja',
-        'Russian': 'ru',
-        'Arabic': 'ar',
-        'Hindi': 'hi',
-        'Kannada': 'kn',
-        'Telugu': 'te',
-        'Mandarin': 'zh'
+        'English': 'en', 'Spanish': 'es', 'French': 'fr', 'German': 'de',
+        'Italian': 'it', 'Japanese': 'ja', 'Russian': 'ru', 'Arabic': 'ar',
+        'Hindi': 'hi', 'Kannada': 'kn', 'Telugu': 'te', 'Mandarin': 'zh'
     };
     return langCodes[language] || 'en';
 }
+
+function handleUrlParams() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const quoteText = urlParams.get('quote');
+    const lang = urlParams.get('lang');
+    if (quoteText && lang) {
+        const quote = { text: quoteText, translation: '' }; // You might want to handle translation differently
+        displayQuote(quote, lang);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    populateLanguageDropdown();
+
+    const languageSelect = document.getElementById('language');
+    document.getElementById('nextQuote').addEventListener('click', nextQuote);
+    document.getElementById('prevQuote').addEventListener('click', prevQuote);
+
+    languageSelect.addEventListener('change', function() {
+        loadQuotes(this.value);
+    });
+
+    handleUrlParams();
+    if (!currentQuote) {
+        loadQuotes(languageSelect.value);
+    }
+});
