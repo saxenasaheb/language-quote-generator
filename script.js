@@ -55,8 +55,13 @@ async function displayQuote(quote, language) {
 
         const imageName = `quote_${Date.now()}.png`;
         const imageRef = storage.ref().child(imageName);
+        
+        console.log("Attempting to upload image:", imageName);
         const snapshot = await imageRef.putString(imageDataUrl, 'data_url');
+        console.log("Image uploaded successfully");
+        
         currentQuoteImageUrl = await snapshot.ref.getDownloadURL();
+        console.log("Image URL:", currentQuoteImageUrl);
 
         currentQuote = quote;
         currentLanguage = language;
@@ -64,6 +69,7 @@ async function displayQuote(quote, language) {
         updateOGImage(quote.text, language, currentQuoteImageUrl);
     } catch (error) {
         console.error('Error generating or uploading image:', error);
+        console.error('Error details:', error.code, error.message);
         currentQuoteImageUrl = randomImageUrl; // Fallback to random image URL
     }
     
@@ -77,7 +83,9 @@ function getRandomImageUrl() {
     return `https://picsum.photos/seed/${randomId}/${width}/${height}`;
 }
 
+
 function updateOGImage(quote, language, imageUrl) {
+    console.log("Updating OG tags with image URL:", imageUrl);
     const metaTags = {
         'og:image': imageUrl,
         'twitter:image': imageUrl,
@@ -95,8 +103,10 @@ function updateOGImage(quote, language, imageUrl) {
             document.head.appendChild(metaTag);
         }
         metaTag.setAttribute('content', content);
+        console.log(`Updated ${property} meta tag with: ${content}`);
     });
 }
+
 
 function setupShareButtons() {
     const shareActions = {
@@ -151,14 +161,15 @@ function updateNavigationButtons() {
 
 function getShareUrl() {
     const baseUrl = window.location.hostname === 'localhost' ? window.location.origin : VERCEL_URL;
-    return `${baseUrl}?quote=${encodeURIComponent(currentQuote.text)}&lang=${encodeURIComponent(currentLanguage)}`;
-}
+    return `${baseUrl}?quote=${encodeURIComponent(currentQuote.text)}&lang=${encodeURIComponent(currentLanguage)}&image=${encodeURIComponent(currentQuoteImageUrl)}`;
+}   
 
 function shareOnTwitter() {
     if (!currentQuote) return;
     const text = `"${currentQuote.text}" - ${currentLanguage} proverb`;
     const url = getShareUrl();
     const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+    console.log("Sharing on Twitter with URL:", url);
     window.open(twitterUrl, '_blank');
 }
 
@@ -167,6 +178,7 @@ function shareOnWhatsApp() {
     const text = `"${currentQuote.text}" - ${currentLanguage} proverb`;
     const url = getShareUrl();
     const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text + '\n' + url)}`;
+    console.log("Sharing on WhatsApp with URL:", url);
     window.open(whatsappUrl, '_blank');
 }
 
@@ -175,8 +187,10 @@ function shareOnTelegram() {
     const text = `"${currentQuote.text}" - ${currentLanguage} proverb`;
     const url = getShareUrl();
     const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`;
+    console.log("Sharing on Telegram with URL:", url);
     window.open(telegramUrl, '_blank');
 }
+
 
 function getLangCode(language) {
     const langCodes = {
